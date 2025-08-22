@@ -101,26 +101,7 @@ st.markdown(f"""
         font-weight: 600 !important;
     }}
 
-    /* CORREÇÃO: Selectbox visível */
-    .stSelectbox > div > div {{
-        background: var(--glass-bg) !important;
-        border: 1px solid var(--glass-border) !important;
-        border-radius: 8px !important;
-        padding: 0.5rem !important;
-        color: var(--text-primary) !important;
-    }}
-
-    .stSelectbox select {{
-        color: var(--text-primary) !important;
-        background: var(--bg-primary) !important;
-    }}
-
-    .stSelectbox option {{
-        color: var(--text-primary) !important;
-        background: var(--bg-primary) !important;
-    }}
-
-    /* CORREÇÃO: Radio buttons visíveis */
+       /* CORREÇÃO: Radio buttons visíveis */
     .stRadio > div {{
         background: var(--glass-bg) !important;
         border: 1px solid var(--glass-border) !important;
@@ -148,6 +129,16 @@ st.markdown(f"""
         border: 1px solid var(--glass-border) !important;
         border-radius: 8px !important;
         padding: 1rem !important;
+        color: var(--text-primary) !important;
+    }}
+
+    /* CORREÇÃO URGENTE: Garantir que o texto do selectbox seja visível */
+    div[data-baseweb="select"] > div {{
+        color: var(--text-primary) !important;
+        background: var(--bg-primary) !important;
+    }}
+
+    div[data-baseweb="select"] input {{
         color: var(--text-primary) !important;
     }}
 
@@ -381,45 +372,42 @@ with st.sidebar:
 st.markdown("<p style='text-align: center; font-size: 1.2rem; color: var(--text-primary);'>SISTEMA PRONTO PARA EXTRAÇÃO DE CERTIFICADOS</p>", unsafe_allow_html=True)
 
 # =====================================
-# UPLOAD E PROCESSAMENTO DE ARQUIVOS
+
+# UPLOAD E PROCESSAMENTO DE ARQUIVOS (FIXED)
+
 # =====================================
-crc_options = [
-    "Selecione um CRC...",
-    "CRC PROTÓTIPO", 
-    "CRC NCC Belém", 
-    "CRC INAC", 
-    "CRC IEC", 
-    "CRC FUNPAPI", 
-    "CRC IA", 
-    "CRC IDC", 
-    "CRC IFS", 
-    "CRC IGH", 
-    "CRC PROGRAMANDO", 
-    "CRC UNIFAP"
-]
+
+opcoes_visiveis = ["Selecione um CRC...", "CRC PROTÓTIPO", "CRC NCC Belém", "CRC INAC", "CRC IEC", "CRC FUNPAPI", "CRC IA", "CRC IDC", "CRC IFS", "CRC IGH", "CRC PROGRAMANDO", "CRC UNIFAP"]
 
 mapa_crc = {
+
     "CRC PROTÓTIPO": "cod_crc.crc_prototipo",
+
     "CRC NCC Belém": "cod_crc.crc_belem",
+
     "CRC INAC": "cod_crc.crc_inac",
+
     "CRC IEC": "cod_crc.crc_iec",
+
     "CRC FUNPAPI": "cod_crc.crc_funpapi",
+
     "CRC IA": "cod_crc.crc_ia",
+
     "CRC IDC": "cod_crc.crc_idc",
+
     "CRC IFS": "cod_crc.crc_ifs",
+
     "CRC IGH": "cod_crc.crc_igh",
+
     "CRC PROGRAMANDO": "cod_crc.crc_programando",
+
     "CRC UNIFAP": "cod_crc.crc_unifap",
+
 }
 
 st.markdown("<p class='widget-label'>Selecione o CRC que deseja realizar a extração:</p>", unsafe_allow_html=True)
-crc_opcao = st.selectbox(
-    "Selecione o CRC:",
-    options=crc_options,
-    key="crc_select",
-    label_visibility="collapsed"
-)
-   
+crc_opcao = st.selectbox("", opcoes_visiveis, key="crc_select")
+
 st.markdown("<p class='widget-label'>Selecione o tipo de PDF:</p>", unsafe_allow_html=True)
 tipo_pdf = st.radio(
     "",
