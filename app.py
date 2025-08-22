@@ -48,7 +48,6 @@ except FileNotFoundError:
 def detect_theme():
     """Detecta se o sistema está no modo claro ou escuro"""
     try:
-        # Tenta detectar o tema do sistema
         return "dark"
     except:
         return "dark"
@@ -56,11 +55,11 @@ def detect_theme():
 current_theme = detect_theme()
 
 # =====================================
-# CSS CUSTOMIZADO PARA TEMA CLARO E ESCURO
+# CSS CUSTOMIZADO - CORRIGIDO PARA AMBOS OS TEMAS
 # =====================================
 st.markdown(f"""
 <style>
-    /* Variáveis CSS para temas */
+    /* Variáveis CSS para ambos os temas */
     :root {{
         --bg-primary: {'#0E1117' if current_theme == 'dark' else '#FFFFFF'};
         --bg-secondary: {'#1E1E1E' if current_theme == 'dark' else '#F0F2F6'};
@@ -89,6 +88,67 @@ st.markdown(f"""
         border-radius: 0 16px 16px 0 !important;
         padding: 2rem 1.5rem !important;
         min-width: 300px !important;
+    }}
+
+    /* CORREÇÃO: Texto dos elementos de formulário */
+    .stSelectbox, .stRadio, .stCheckbox, .stFileUploader {{
+        color: var(--text-primary) !important;
+    }}
+
+    .stSelectbox label, .stRadio label, .stCheckbox label, .stFileUploader label {{
+        color: var(--text-primary) !important;
+        font-size: 1rem !important;
+        font-weight: 600 !important;
+    }}
+
+    /* CORREÇÃO: Selectbox visível */
+    .stSelectbox > div > div {{
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--glass-border) !important;
+        border-radius: 8px !important;
+        padding: 0.5rem !important;
+        color: var(--text-primary) !important;
+    }}
+
+    .stSelectbox select {{
+        color: var(--text-primary) !important;
+        background: var(--bg-primary) !important;
+    }}
+
+    .stSelectbox option {{
+        color: var(--text-primary) !important;
+        background: var(--bg-primary) !important;
+    }}
+
+    /* CORREÇÃO: Radio buttons visíveis */
+    .stRadio > div {{
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--glass-border) !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        color: var(--text-primary) !important;
+    }}
+
+    .stRadio label {{
+        color: var(--text-primary) !important;
+    }}
+
+    /* CORREÇÃO: Checkbox visível */
+    .stCheckbox > div {{
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--glass-border) !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        color: var(--text-primary) !important;
+    }}
+
+    /* CORREÇÃO: File uploader visível */
+    .stFileUploader > div {{
+        background: var(--glass-bg) !important;
+        border: 1px solid var(--glass-border) !important;
+        border-radius: 8px !important;
+        padding: 1rem !important;
+        color: var(--text-primary) !important;
     }}
 
     /* Melhorar legibilidade da sidebar */
@@ -120,19 +180,19 @@ st.markdown(f"""
         margin-bottom: 0.5rem !important;
     }}
 
-    /* Botões maiores e melhor organizados */
+    /* CORREÇÃO: Botões maiores e melhor alinhados */
     .stButton > button {{
         background: var(--button-bg) !important;
         border: 1px solid var(--accent-color) !important;
         color: var(--text-primary) !important;
         font-family: "Segoe UI", sans-serif !important;
         font-weight: bold !important;
-        font-size: 1rem !important;
-        padding: 0.75rem 1.5rem !important;
-        border-radius: 8px !important;
+        font-size: 1.1rem !important;
+        padding: 1rem 2rem !important;
+        border-radius: 12px !important;
         transition: all 0.3s !important;
         width: 100% !important;
-        min-height: 50px !important;
+        min-height: 60px !important;
         backdrop-filter: blur(5px);
         -webkit-backdrop-filter: blur(5px);
         box-shadow: 0 4px 6px rgba(0,0,0,0.2) !important;
@@ -146,9 +206,10 @@ st.markdown(f"""
         transform: translateY(-2px);
     }}
 
-    /* Organização dos botões em colunas */
+    /* CORREÇÃO: Organização dos botões em colunas */
     .stButton {{
         width: 100% !important;
+        margin: 1rem 0 !important;
     }}
 
     /* Containers de conteúdo */
@@ -170,11 +231,12 @@ st.markdown(f"""
     }}
 
     .widget-label {{
-        font-size: 1.1rem !important;
+        font-size: 1.2rem !important;
         color: var(--text-primary) !important;
         font-family: "Segoe UI", sans-serif !important;
-        margin-bottom: 0.8rem !important;
+        margin-bottom: 1rem !important;
         font-weight: 600 !important;
+        padding: 0.5rem 0 !important;
     }}
 
     /* Tabela de resultados */
@@ -191,7 +253,7 @@ st.markdown(f"""
     }}
 
     .glass-table-header {{
-        background: rgba(255, 255, 255, 0.1) !important;
+        background: {'rgba(255, 255, 255, 0.1)' if current_theme == 'dark' else 'rgba(0, 0, 0, 0.05)'} !important;
         border-radius: 8px;
         padding: 15px 10px;
         display: flex;
@@ -209,7 +271,7 @@ st.markdown(f"""
     }}
 
     .glass-table-row:hover {{
-        background-color: rgba(255, 255, 255, 0.05);
+        background-color: {'rgba(255, 255, 255, 0.05)' if current_theme == 'dark' else 'rgba(0, 0, 0, 0.02)'};
     }}
 
     .glass-table-cell {{
@@ -220,29 +282,12 @@ st.markdown(f"""
         word-wrap: break-word;
     }}
 
-    /* Ajustes para selectbox e radio buttons */
-    .stSelectbox, .stRadio {{
-        margin-bottom: 1.5rem !important;
-    }}
-
-    .stSelectbox > div > div, .stRadio > div {{
-        background: var(--glass-bg) !important;
-        border: 1px solid var(--glass-border) !important;
-        border-radius: 8px !important;
-        padding: 0.5rem !important;
-    }}
-
-    /* Ajustes para file uploader */
-    .stFileUploader {{
-        margin-bottom: 1.5rem !important;
-    }}
-
     /* Layout responsivo para colunas */
     @media (max-width: 768px) {{
         .stButton > button {{
-            font-size: 0.9rem !important;
-            padding: 0.6rem 1rem !important;
-            min-height: 45px !important;
+            font-size: 1rem !important;
+            padding: 0.8rem 1.5rem !important;
+            min-height: 55px !important;
         }}
         
         [data-testid="stSidebar"] {{
@@ -338,7 +383,21 @@ st.markdown("<p style='text-align: center; font-size: 1.2rem; color: var(--text-
 # =====================================
 # UPLOAD E PROCESSAMENTO DE ARQUIVOS
 # =====================================
-opcoes_visiveis = ["Selecione um CRC...", "CRC PROTÓTIPO", "CRC NCC Belém", "CRC INAC", "CRC IEC", "CRC FUNPAPI", "CRC IA", "CRC IDC", "CRC IFS", "CRC IGH", "CRC PROGRAMANDO", "CRC UNIFAP"]
+crc_options = [
+    "Selecione um CRC...",
+    "CRC PROTÓTIPO", 
+    "CRC NCC Belém", 
+    "CRC INAC", 
+    "CRC IEC", 
+    "CRC FUNPAPI", 
+    "CRC IA", 
+    "CRC IDC", 
+    "CRC IFS", 
+    "CRC IGH", 
+    "CRC PROGRAMANDO", 
+    "CRC UNIFAP"
+]
+
 mapa_crc = {
     "CRC PROTÓTIPO": "cod_crc.crc_prototipo",
     "CRC NCC Belém": "cod_crc.crc_belem",
@@ -354,7 +413,12 @@ mapa_crc = {
 }
 
 st.markdown("<p class='widget-label'>Selecione o CRC que deseja realizar a extração:</p>", unsafe_allow_html=True)
-crc_opcao = st.selectbox("", opcoes_visiveis, key="crc_select")
+crc_opcao = st.selectbox(
+    "Selecione o CRC:",
+    options=crc_options,
+    key="crc_select",
+    label_visibility="collapsed"
+)
    
 st.markdown("<p class='widget-label'>Selecione o tipo de PDF:</p>", unsafe_allow_html=True)
 tipo_pdf = st.radio(
@@ -364,26 +428,30 @@ tipo_pdf = st.radio(
 )
    
 st.markdown("<p class='widget-label'>O nome do arquivo é o nome do aluno?</p>", unsafe_allow_html=True)
-nome_do_arquivo_e_nome_do_aluno = st.checkbox("", key="nome_no_arquivo_checkbox")
+nome_do_arquivo_e_nome_do_aluno = st.checkbox("Sim, o nome do arquivo é o nome do aluno", key="nome_no_arquivo_checkbox")
 
 st.markdown("<p class='widget-label'>Envie um ou mais certificados:</p>", unsafe_allow_html=True)
 arquivos = st.file_uploader(
-    "",
+    "Selecione os arquivos PDF",
     type="pdf",
     accept_multiple_files=True,
-    key="pdf_uploader"
+    key="pdf_uploader",
+    label_visibility="collapsed"
 )
 
 st.write("")
 
-# Layout melhorado para os botões
-col1, col2 = st.columns(2)
-   
+# CORREÇÃO: Layout melhorado para os botões com maior espaçamento
+col1, col2, col3 = st.columns([1, 0.2, 1])  # Coluna do meio vazia para espaçamento
+
 with col1:
-    extract_button = st.button("📄 Extrair Dados", key="extract_button")
-   
-with col2:
-    clear_button = st.button("🗑️ Limpar Tudo", key="clear_button")
+    extract_button = st.button("📄 EXTRAIR DADOS", key="extract_button", use_container_width=True)
+
+with col3:
+    clear_button = st.button("🗑️ LIMPAR TUDO", key="clear_button", use_container_width=True)
+
+# Espaçamento entre os botões
+st.write("")
 
 if extract_button:
     if crc_opcao == "Selecione um CRC...":
@@ -437,7 +505,6 @@ if extract_button:
         if extraido_com_sucesso and todos_dados:
             df = pd.DataFrame(todos_dados)
 
-            # Contêiner para a tabela de resultados com o novo estilo
             st.markdown("""
             <h3>Resultados da Extração</h3>
             <div class="glass-table-header">
@@ -463,11 +530,12 @@ if extract_button:
             csv_bytes = df.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
            
             st.download_button(
-                label="💾 Baixar resultados em Excel",
+                label="💾 BAIXAR RESULTADOS EM EXCEL",
                 data=csv_bytes,
                 file_name="extracao_certificados.csv",
                 mime="text/csv",
-                key="download_button"
+                key="download_button",
+                use_container_width=True
             )
         elif not extraido_com_sucesso:
                 st.warning("⚠️ Nenhuma informação extraída. Por favor, verifique os arquivos e tente novamente.")
