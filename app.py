@@ -37,25 +37,28 @@ try:
     mincom_logo = Image.open("ministerio_comunicacoes_logo.png")
     cpi_logo_top = Image.open("computadores_para_inclusao_logo.png")
     marica_logo = Image.open("secpi_logo.png")
-
 except FileNotFoundError:
     st.error("Erro: Verifique se os arquivos de logo ('ghost_logo.png', 'cpi_logo.png', 'ministerio_comunicacoes_logo.png', 'computadores_para_inclusao_logo.png' e 'secpi_logo.png') estão na mesma pasta do 'app.py'")
     st.stop()
 
 # =====================================
-# DETECTAR TEMA DO SISTEMA
+# GERENCIAMENTO DE TEMA COM SESSION STATE
 # =====================================
-def detect_theme():
-    """Detecta se o sistema está no modo claro ou escuro"""
-    try:
-        return "dark"
-    except:
-        return "dark"
+# ADAPTAÇÃO: Código para gerenciar o tema e permitir a alternância
+if 'theme' not in st.session_state:
+    st.session_state.theme = "dark"
 
-current_theme = detect_theme()
+current_theme = st.session_state.theme
+
+def switch_theme():
+    """Alterna entre os temas claro e escuro."""
+    if st.session_state.theme == "dark":
+        st.session_state.theme = "light"
+    else:
+        st.session_state.theme = "dark"
 
 # =====================================
-# CSS CUSTOMIZADO - CORRIGIDO PARA AMBOS OS TEMAS
+# CSS CUSTOMIZADO
 # =====================================
 st.markdown(f"""
 <style>
@@ -73,14 +76,14 @@ st.markdown(f"""
         --button-hover: {'rgba(33, 150, 243, 0.4)' if current_theme == 'dark' else 'rgba(0, 104, 201, 0.2)'};
     }}
 
-    /* Fundo principal */
+    /* ADAPTAÇÃO: Fundo principal com o gradiente que você quer */
     [data-testid="stAppViewContainer"] {{
         background: {'linear-gradient(135deg, #5C000C 0%, #00001A 50%, #002980 100%)' if current_theme == 'dark' else 'linear-gradient(135deg, #FFE5E9 0%, #F0F8FF 50%, #E6F7FF 100%)'} !important;
         color: var(--text-primary) !important;
         font-family: "Segoe UI", "Inter", sans-serif !important;
     }}
 
-    /* Barra lateral */
+    /* ADAPTAÇÃO: Barra lateral com o mesmo gradiente */
     [data-testid="stSidebar"] {{
         background: {'linear-gradient(135deg, #5C000C 0%, #00001A 50%, #002980 100%)' if current_theme == 'dark' else 'linear-gradient(135deg, #FFE5E9 0%, #F0F8FF 50%, #E6F7FF 100%)'} !important;
         border-right: 1px solid var(--border-color) !important;
@@ -101,7 +104,7 @@ st.markdown(f"""
         font-weight: 600 !important;
     }}
 
-       /* CORREÇÃO: Radio buttons visíveis */
+    /* CORREÇÃO: Radio buttons visíveis */
     .stRadio > div {{
         background: var(--glass-bg) !important;
         border: 1px solid var(--glass-border) !important;
@@ -230,7 +233,7 @@ st.markdown(f"""
         padding: 0.5rem 0 !important;
     }}
 
-    /* Tabela de resultados */
+    /* Tabela de resultados (original) */
     .glass-table-container {{
         background: var(--glass-bg) !important;
         backdrop-filter: blur(10px) !important;
@@ -306,7 +309,7 @@ st.markdown(f"""
     <h1 style='color: var(--text-primary); font-family: "Segoe UI", sans-serif; font-weight: 600; text-shadow: none; margin-bottom: 0.2rem;'>
         SECPI
     </h1>
-   
+    
 </div>
 <div class='glass-container' style='margin-top: 1rem; padding: 1rem;'>
     <h3 style='color: var(--text-primary); font-family: "Segoe UI", sans-serif; font-weight: 300; margin: 0; text-align: center;'>
@@ -319,6 +322,9 @@ st.markdown(f"""
 # BARRA LATERAL (SIDEBAR)
 # =====================================
 with st.sidebar:
+    # ADAPTAÇÃO: Botão para alternar o tema
+    st.button(f"{'☀️' if current_theme == 'dark' else '🌙'} Alternar Tema", on_click=switch_theme, key='switch_theme_button', use_container_width=True)
+
     st.markdown("""
     <div class="sidebar-content">
         <h3>ℹ️ SOBRE O PROGRAMA</h3>
@@ -372,37 +378,23 @@ with st.sidebar:
 st.markdown("<p style='text-align: center; font-size: 1.2rem; color: var(--text-primary);'>SISTEMA PRONTO PARA EXTRAÇÃO DE CERTIFICADOS</p>", unsafe_allow_html=True)
 
 # =====================================
-
 # UPLOAD E PROCESSAMENTO DE ARQUIVOS (FIXED)
-
 # =====================================
 
 opcoes_visiveis = ["Selecione um CRC...", "CRC PROTÓTIPO", "CRC NCC Belém", "CRC INAC", "CRC IEC", "CRC FUNPAPI", "CRC IA", "CRC IDC", "CRC IFS", "CRC IGH", "CRC PROGRAMANDO", "CRC UNIFAP"]
 
 mapa_crc = {
-
     "CRC PROTÓTIPO": "cod_crc.crc_prototipo",
-
     "CRC NCC Belém": "cod_crc.crc_belem",
-
     "CRC INAC": "cod_crc.crc_inac",
-
     "CRC IEC": "cod_crc.crc_iec",
-
     "CRC FUNPAPI": "cod_crc.crc_funpapi",
-
     "CRC IA": "cod_crc.crc_ia",
-
     "CRC IDC": "cod_crc.crc_idc",
-
     "CRC IFS": "cod_crc.crc_ifs",
-
     "CRC IGH": "cod_crc.crc_igh",
-
     "CRC PROGRAMANDO": "cod_crc.crc_programando",
-
     "CRC UNIFAP": "cod_crc.crc_unifap",
-
 }
 
 st.markdown("<p class='widget-label'>Selecione o CRC que deseja realizar a extração:</p>", unsafe_allow_html=True)
@@ -414,7 +406,7 @@ tipo_pdf = st.radio(
     ["Único PDF (somente frente)", "Único PDF (frente e verso)", "Vários PDFs (somente frente)", "Vários PDFs (frente e verso)"],
     key="tipo_pdf_radio"
 )
-   
+    
 st.markdown("<p class='widget-label'>O nome do arquivo é o nome do aluno?</p>", unsafe_allow_html=True)
 nome_do_arquivo_e_nome_do_aluno = st.checkbox("Sim, o nome do arquivo é o nome do aluno", key="nome_no_arquivo_checkbox")
 
@@ -429,8 +421,8 @@ arquivos = st.file_uploader(
 
 st.write("")
 
-# CORREÇÃO: Layout melhorado para os botões com maior espaçamento
-col1, col2, col3 = st.columns([1, 0.2, 1])  # Coluna do meio vazia para espaçamento
+# Layout melhorado para os botões com maior espaçamento
+col1, col2, col3 = st.columns([1, 0.2, 1])
 
 with col1:
     extract_button = st.button("📄 EXTRAIR DADOS", key="extract_button", use_container_width=True)
@@ -438,7 +430,6 @@ with col1:
 with col3:
     clear_button = st.button("🗑️ LIMPAR TUDO", key="clear_button", use_container_width=True)
 
-# Espaçamento entre os botões
 st.write("")
 
 if extract_button:
@@ -449,11 +440,11 @@ if extract_button:
     else:
         todos_dados = []
         extraido_com_sucesso = False
-           
+            
         with st.spinner('🔍 Extraindo dados... aguarde um momento...'):
             try:
                 modulo_crc = importlib.import_module(mapa_crc[crc_opcao])
-                   
+                    
                 for arquivo in arquivos:
                     with open("temp.pdf", "wb") as f:
                         f.write(arquivo.getbuffer())
@@ -476,7 +467,7 @@ if extract_button:
                                 "Data": dados_por_pagina["Data"][i]
                             }
                             todos_dados.append(dados)
-                           
+                            
                         extraido_com_sucesso = True
 
                     except Exception as e:
@@ -484,15 +475,16 @@ if extract_button:
                     finally:
                         if os.path.exists("temp.pdf"):
                             os.remove("temp.pdf")
-               
+                
             except KeyError:
                 st.error("❌ Erro: A opção de CRC selecionada não é válida. Por favor, escolha uma opção da lista.")
             except ImportError:
                 st.error(f"❌ Erro: O módulo de extração para '{crc_opcao}' não foi encontrado. Certifique-se de que os arquivos de extração (ex: crc_belem.py) estão na pasta 'cod_crc'.")
-           
+            
         if extraido_com_sucesso and todos_dados:
             df = pd.DataFrame(todos_dados)
-
+            
+            # MANTENDO A TABELA CUSTOMIZADA QUE VOCÊ GOSTOU
             st.markdown("""
             <h3>Resultados da Extração</h3>
             <div class="glass-table-header">
@@ -503,7 +495,7 @@ if extract_button:
                 <div style="flex: 1; padding: 0 5px;">📆 Data</div>
             </div>
             """, unsafe_allow_html=True)
-           
+            
             for index, row in df.iterrows():
                 st.markdown(f"""
                 <div class="glass-table-row">
@@ -514,9 +506,9 @@ if extract_button:
                     <div class="glass-table-cell">{row['Data']}</div>
                 </div>
                 """, unsafe_allow_html=True)
-           
+            
             csv_bytes = df.to_csv(index=False, sep=';', encoding='utf-8-sig').encode('utf-8-sig')
-           
+            
             st.download_button(
                 label="💾 BAIXAR RESULTADOS EM EXCEL",
                 data=csv_bytes,
@@ -526,7 +518,7 @@ if extract_button:
                 use_container_width=True
             )
         elif not extraido_com_sucesso:
-                st.warning("⚠️ Nenhuma informação extraída. Por favor, verifique os arquivos e tente novamente.")
+            st.warning("⚠️ Nenhuma informação extraída. Por favor, verifique os arquivos e tente novamente.")
 
 if clear_button:
     st.session_state.clear()
